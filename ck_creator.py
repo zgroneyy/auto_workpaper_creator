@@ -12,6 +12,15 @@ from docx.enum.text import *
 from docx.enum.style import *
 from docx.shared import Pt
 
+def __init__(self):
+    self.auditor_name = ''
+
+def setAuditor(self, auditor_name):
+    self.auditor_name = auditorname
+
+def getAuditor(self):
+    return self.auditor_name
+
 def creator():    
     with open ('list.txt', encoding='utf8') as f:
         # read lines for auto-numbering
@@ -53,6 +62,8 @@ def creator():
             denetim_elemani.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
             denetim_elemani.add_run('Testi Gerçekleştiren Denetim Elemanı:  ', style='CommentStyle').bold=True
             denetim_elemani.add_run('Özgür Öney, Denetim Genel Müdürlüğü, Yetkili BT Denetçi Yardımcısı', style='CommentStyle')
+            # print(gui.getAuditorName())
+            # denetim_elemani.add_run(gui.getAuditorName(), style='CommentStyle')
             
             orneklem = document.add_paragraph()
             orneklem.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT

@@ -6,6 +6,10 @@ Created on Wed Jan 12 00:33:58 2022
 @author: ozgur oney
 """
 import os
+import random
+import time
+import datetime
+    
 from docx import Document
 from docx.opc.coreprops import CoreProperties
 from docx.enum.style import WD_STYLE_TYPE
@@ -16,7 +20,8 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
-
+from datetime import datetime
+from datetime import date
 window = Tk()
 window.title('Workpaper Creator')
 # set minimum window size value
@@ -32,8 +37,15 @@ btn_font = ('sans-serif', 10)
 bgcolor = '#BF5517'
 
 genvar = StringVar()
-genopt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-genvar.set('1')
+genopt = ['Denetçi Yardımcısı', 
+          'BT Denetçi Yardımcısı', 
+          'Yetkili Denetçi Yardımcısı', 
+          'Yetkili BT Denetçi Yardımcısı', 
+          'Denetçi', 
+          'Müfettiş', 
+          'Başdenetçi', 
+          'Başmüfettiş']
+genvar.set('BT Denetçi Yardımcısı')
 # den_sayisi=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 
 def clear_inputs():
@@ -42,6 +54,16 @@ def clear_inputs():
     denetim_elemani_adi.delete(0, 'end')
     pathLabel.delete(0,'end')
     
+def date_to_timestamp(d) :
+    day, month, year = d.split('/')
+    return date(int(year), int(month), int(day))
+    
+def randomDate(start, end):
+    stime = date_to_timestamp(start)
+    etime = date_to_timestamp(end)
+    ptime = stime + random.random() * (etime-stime)
+    return str(ptime)
+
 def select_file():
     window.withdraw()
     file_path = askopenfilename(title="Open file", 
@@ -86,7 +108,7 @@ def generate():
             tarih.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
             # u_tarih = input("Tarih giriniz: ")
             tarih_run = tarih.add_run('Tarih: ', style='CommentStyle').bold=True
-            u_tarih = tarih.add_run(baslangictarihi.get(), style='CommentStyle')
+            u_tarih = tarih.add_run(randomDate(baslangictarihi.get(), bitistarihi.get()), style='CommentStyle')
             
             ck_num= document.add_paragraph()
             ck_num.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
@@ -103,7 +125,7 @@ def generate():
             denetim_elemani.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
             denetim_elemani.add_run('Testi Gerçekleştiren Denetim Elemanı:  ', style='CommentStyle').bold=True
             
-            isim = str(denetim_elemani_adi.get()) +  ", Denetim Genel Müdürlüğü, Yetkili BT Denetçi Yardımcısı" 
+            isim = str(denetim_elemani_adi.get()) +  ", " +  str(genvar.get()) + ", Denetim Genel Müdürlüğü, "
             denetim_elemani.add_run(isim, style='CommentStyle')
             # print(gui.getAuditorName())
             # denetim_elemani.add_run(gui.getAuditorName(), style='CommentStyle')
@@ -134,15 +156,15 @@ frame = Frame(window, padx=20, pady=20, bg=bgcolor)
 frame.pack(expand=True, fill=BOTH)
 
 #labels
-Label(frame, text= "Den. Programı seçiniz: ", font=f, 
+Label(frame, text= "Den. Programı: ", font=f, 
       bg=bgcolor).grid(column=0, row=0, padx=15, pady=15)
 pathLabel = Entry(frame,textvariable="")
 pathLabel.grid(column=1, row=0, padx=15, pady=15)
-Label(frame, text = "Baş. tarihi giriniz: ", font=f, 
+Label(frame, text = "Baş. tarihi : ", font=f, 
       bg=bgcolor).grid(column=0, row=1, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
-Label(frame, text = "Bit. tarihi giriniz: ", font=f, 
+Label(frame, text = "Bit. tarihi : ", font=f, 
       bg=bgcolor).grid(column=0, row=2, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
@@ -150,7 +172,7 @@ Label(frame, text = "Den. Elemanı İsim: ", font=f,
       bg=bgcolor).grid(column=0, row=3, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
-Label(frame, text = "Kaç denetim adımı?: ", font=f, 
+Label(frame, text = "Title: ", font=f, 
       bg=bgcolor).grid(column=0, row=4, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
@@ -172,22 +194,22 @@ bitistarihi = Entry(frame, width=20, font=f)
 bitistarihi.grid(row=2, column=1)
 denetim_elemani_adi = Entry(frame, width=20, font=f)
 denetim_elemani_adi.grid(row=3, column=1)
-sayi = OptionMenu(
+rutbe = OptionMenu(
     frame, 
     genvar,
     *genopt
 )
-sayi.grid(row=4, column=1, pady=(5,0))
-sayi.config(width=16, font=f)
+rutbe.grid(row=4, column=1, pady=(5,0))
+rutbe.config(width=16, font=f)
 
 #defaults
-baslangictarihi.insert(0,'1.1.2000')
-bitistarihi.insert(0,'1.1.2000')
+baslangictarihi.insert(0,'01/01/2000')
+bitistarihi.insert(0,'14/02/2003')
 denetim_elemani_adi.insert(0,'John Doe')
 
 submit_btn = Button(
     btn_frame,
-    text='Generate Word',
+    text='Oluştur',
     command=generate,
     font=btn_font,
     padx=10, 
@@ -197,7 +219,7 @@ submit_btn.pack(side=LEFT, expand=True, padx=(15, 0))
 
 clear_btn = Button(
     btn_frame,
-    text='Clear',
+    text='Temizle',
     command=clear_inputs,
     font=btn_font,
     padx=10, 
@@ -208,7 +230,7 @@ clear_btn.pack(side=LEFT, expand=True, padx=15)
 
 exit_btn = Button(
     btn_frame,
-    text='Exit',
+    text='Çıkış',
     command=lambda:window.destroy(),
     font=btn_font,
     padx=10, 

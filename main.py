@@ -5,13 +5,16 @@ Created on Wed Jan 12 00:33:58 2022
 
 @author: ozgur oney
 """
+import os
 from docx import Document
 from docx.opc.coreprops import CoreProperties
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 from tkinter import *
+from tkinter import filedialog
 from tkinter import messagebox
+from tkinter.filedialog import askopenfilename
 
 window = Tk()
 window.title('Workpaper Creator')
@@ -31,6 +34,21 @@ def clear_inputs():
     bitistarihi.delete(0, 'end')
     denetim_elemani.delete(0, 'end')
     
+def select_file():
+    window.withdraw()
+    file_path = askopenfilename(title="Open file", 
+                                       filetypes=[("Word",".docx"),("All files",".*")])
+    if file_path != "":
+        print ("you chose file with path:", file_path)
+
+    else:
+        print ("you didn't open anything!")
+    pathLabel.delete(0, END)
+    pathLabel.insert(0, file_path)
+    file_path = os.path.dirname(file_path)
+    window.deiconify()
+    return file_path
+
 def generate():
      return None
 # frames
@@ -38,36 +56,50 @@ frame = Frame(window, padx=20, pady=20, bg=bgcolor)
 frame.pack(expand=True, fill=BOTH)
 
 #labels
-Label(frame, text = "Baş. tarihi giriniz: ", font=f, 
+Label(frame, text= "Den. Programı seçiniz: ", font=f, 
       bg=bgcolor).grid(column=0, row=0, padx=15, pady=15)
-btn_frame = Frame(frame, bg=bgcolor)
-btn_frame.grid(columnspan=2, pady=(50, 0))
-Label(frame, text = "Bit. tarihi giriniz: ", font=f, 
+pathLabel = Entry(frame,textvariable="")
+pathLabel.grid(column=1, row=0, padx=15, pady=15)
+Label(frame, text = "Baş. tarihi giriniz: ", font=f, 
       bg=bgcolor).grid(column=0, row=1, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
-Label(frame, text = "Den. Elemanı İsim: ", font=f, 
+Label(frame, text = "Bit. tarihi giriniz: ", font=f, 
       bg=bgcolor).grid(column=0, row=2, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
-Label(frame, text = "Kaç denetim adımı?: ", font=f, 
+Label(frame, text = "Den. Elemanı İsim: ", font=f, 
       bg=bgcolor).grid(column=0, row=3, padx=15, pady=15)
 btn_frame = Frame(frame, bg=bgcolor)
 btn_frame.grid(columnspan=2, pady=(50, 0))
+Label(frame, text = "Kaç denetim adımı?: ", font=f, 
+      bg=bgcolor).grid(column=0, row=4, padx=15, pady=15)
+btn_frame = Frame(frame, bg=bgcolor)
+btn_frame.grid(columnspan=2, pady=(50, 0))
 
-#input widgets
+#input widgets   
+fileSelect = Button(
+    frame,
+    text='Dosya Seç',
+    command=select_file,
+    font=btn_font,
+    padx=10, 
+    pady=5,
+    width=7
+)
+fileSelect.grid(row=0, column=2)
 baslangictarihi = Entry(frame, width=20, font=f)
-baslangictarihi.grid(row=0, column=1)
+baslangictarihi.grid(row=1, column=1)
 bitistarihi = Entry(frame, width=20, font=f)
-bitistarihi.grid(row=1, column=1)
+bitistarihi.grid(row=2, column=1)
 denetim_elemani = Entry(frame, width=20, font=f)
-denetim_elemani.grid(row=2, column=1)
+denetim_elemani.grid(row=3, column=1)
 sayi = OptionMenu(
     frame, 
     genvar,
     *genopt
 )
-sayi.grid(row=3, column=1, pady=(5,0))
+sayi.grid(row=4, column=1, pady=(5,0))
 sayi.config(width=16, font=f)
 
 #defaults
